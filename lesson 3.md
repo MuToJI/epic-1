@@ -71,6 +71,11 @@ CREATE TABLE table_name (column_name1 data_type(size) [<options>], …, column_n
     ALTER TABLE table_name [<options>];
 ```
 
+## Типы таблиц
+InnoDB -
+MyISAM -
+MEMORY -
+
 #Упоминаем про функции mysql_ и объясняем, почему их не надо использовать
 Фактически это функции для работы с БД mysql которыми пользовались из глубин веков, но которые уже с версии 5.5 помечаются как устаревшие. В версии 7 удалены, потому пользоваться ими не стоит.
 
@@ -81,23 +86,49 @@ CREATE TABLE table_name (column_name1 data_type(size) [<options>], …, column_n
 Стоит учесть что сами запросы все равно придется переписывать под каждую специфичную БД.<br/>
 
 Подключение к БД<br/>
-
 ```
-$config = [
-  'host' => 'localhost',
-  'port' => '',
-  'user' => 'some',
-  'password' => '',
-];
-
-$mysql = new \PDO("mysql:host={$config['host']}" . (empty($config['port']) ? '' : ";port:{$config['port']}"), $config['user'], $config['password'], [
-  \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-  \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC
-]);
-empty($config['dbname']) ?: $mysql->query("USE `{$config['dbname']}`");
-empty($config['encoding']) ?: $mysql->query("SET NAMES '{$config['encoding']}'");
+    $config = [
+      'host' => 'localhost',
+      'port' => '',
+      'user' => 'some',
+      'password' => '',
+    ];
+    $mysql = new \PDO("mysql:host={$config['host']}" . (empty($config['port']) ? '' : ";port:{$config['port']}"), $config['user'], $config['password'], [
+      \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+      \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC
+    ]);
+    empty($config['dbname']) ?: $mysql->query("USE `{$config['dbname']}`");
+    empty($config['encoding']) ?: $mysql->query("SET NAMES '{$config['encoding']}'");
 ```
 
-4. SQLite
+#SQLite
+Легковесная встраиваемая реляционная БД.
+
+Плюсы:
+
+* все данные хранятся в одном файле
+* не требуется установка и настройка сервера
+* меньшие расходы ресурсов сервера
+* только два типа данных
+
+Минусы:
+
+* Запись в базу только при отсутствии других запросов (lock базы)
+* Т.к. нет сервера, нельзя шардировать данные
+
+```
+    $db = new \PDO("sqlite:/home/vagrant/database.db",'' ,'', [
+       \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+       \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC
+    ]);
+    $res = $db->query("
+    CREATE TABLE IF NOT EXISTS something(
+        id INTEGER PRIMARY KEY,
+        value TEXT
+    );
+    $res = $db->query("INSERT INTO something(`value`) VALUES (11),(22),(33),(44),(20)");
+    print_r($db->query("SELECT * FROM something WHERE `value`=20");
+```
+
 5. Транзакции в БД
 
