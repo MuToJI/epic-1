@@ -119,7 +119,6 @@ CREATE TABLE table_name (column_name1 data_type(size) [<options>], …, column_n
 Минусы:
 
 * Запись в базу только при отсутствии других запросов (lock базы)
-* Т.к. нет сервера, нельзя шардировать данные
 
 ```
     $db = new \PDO("sqlite:/home/vagrant/database.db",'' ,'', [
