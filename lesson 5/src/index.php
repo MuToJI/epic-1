@@ -2,14 +2,24 @@
 
 define('TEMPLATE_DIR', __DIR__);
 
-$mysql = connection([
-                       'host' => 'localhost',
-                       'port' => '',
-                       'user' => 'some',
-                       'password' => '',
-                    ]);
+//$mysql = connection([
+//                       'host' => 'localhost',
+//                       'port' => '',
+//                       'user' => 'some',
+//                       'password' => '',
+//                    ]);
 
-echo template('index.html', ['test' => 'some']);
+echo template('index.html', [
+   'messages' => [
+      ['text' => 'some', 'author' => 'admin', 'time' => time()],
+      ['text' => 'some1', 'author' => 'admin', 'time' => time()],
+      ['text' => 'some2', 'author' => 'admin', 'time' => time()],
+      ['text' => 'some3', 'author' => 'admin', 'time' => time()],
+      ['text' => 'some4', 'author' => 'admin', 'time' => time()],
+      ['text' => 'some5', 'author' => 'admin', 'time' => time()],
+      ['text' => 'some6', 'author' => 'admin', 'time' => time()],
+   ]
+]);
 
 //=======================================================================
 /**

@@ -5,6 +5,21 @@
     <title>epic blog</title>
 </head>
 <body>
-<?=$test; ?>
+<?php
+if (!empty($messages)) { ?>
+    <div>
+        <?php
+        foreach ($messages as $message) { ?>
+            <div><?= $message['text']; ?></div>
+            <div><?= $message['time']; ?></div>
+            <div><?= $message['author']; ?></div>
+        <?php } ?>
+    </div>
+<?php } ?>
+<form action="index.php">
+    <input type="text" name="message">
+
+    <p><input type="submit"></p>
+</form>
 </body>
 </html>
