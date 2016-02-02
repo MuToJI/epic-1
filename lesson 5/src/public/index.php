@@ -3,8 +3,8 @@
 error_reporting(E_ALL);
 session_start();
 
-require 'config.php';
-require 'blog.php';
+require '../config.php';
+require '../blog.php';
 
 define('TEMPLATE_DIR', __DIR__ . '/templates');
 
