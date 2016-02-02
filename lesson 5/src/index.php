@@ -6,7 +6,7 @@ session_start();
 require 'config.php';
 require 'blog.php';
 
-define('TEMPLATE_DIR', __DIR__);
+define('TEMPLATE_DIR', __DIR__ . '/templates');
 
 $mysql = connection(mysql_config());
 
