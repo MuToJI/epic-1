@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>epic blog</title>
+    <style type="text/css">
+        body {
+            width: 60%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .right {
+            float: right;
+        }
+
+        textarea {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<h1>Epic blog</h1>
+
+<form action="index.php" method="post">
+    <label for="login">login<input type="text" id="login" name="login" value="<?= $login ?>"></label>
+    <label for="password">password<input type="password" id="password" name="password"></label>
+    <input type="hidden" name="token" value="<?= $token; ?>">
+
+    <p><input type="submit" name="command" value="login" class="right"></p>
+</form>
+</body>
+</html>

@@ -10,21 +10,32 @@ define('TEMPLATE_DIR', __DIR__ . '/templates');
 
 $mysql = connection(mysql_config());
 
-$user = [
-   'id' => 0,
-   'login' => 'admin'
-];
+$user = user();
 
-if (!empty($_POST['command']) && $_POST['command'] === 'save' && valid_request($_POST)) {
-    $statement = $mysql->prepare('INSERT INTO `messages` SET `message`=:message, `user_id`=:user_id, `time`=:time');
-    $statement->execute([':message' => $_POST['message'], ':user_id' => $user['id'], ':time' => date('Y-m-d H:i:s')]);
+if (!empty($_POST['command']) && valid_token($_POST['token'])) {
+    switch ($_POST['command']) {
+        case 'save':
+            insert_message($mysql, $_POST, $user);
+            break;
+        case 'login':
+            $user = user($mysql, $_POST);
+            break;
+    }
 }
 
-$messages = $mysql->query('SELECT m.`message`, m.`time`, u.`login` FROM `messages` m LEFT JOIN `users` u ON `m`.`user_id`=`u`.`id` ORDER BY m.`time` DESC')->fetchAll();
+if (empty($user)) {
+    $token = uniqid();
+    echo template('authorization.html', [
+       'token' => $token,
+       'login' => empty($_POST['login']) ? '' : $_POST['login'],
+    ]);
+    $_SESSION['token'] = $token;
+    exit();
+}
 
 $token = uniqid();
 echo template('index.html', [
    'token' => $token,
-   'messages' => $messages,
+   'messages' => load_messages($mysql),
 ]);
 $_SESSION['token'] = $token;
