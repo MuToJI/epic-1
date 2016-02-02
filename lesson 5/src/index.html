@@ -10,16 +10,17 @@ if (!empty($messages)) { ?>
     <div>
         <?php
         foreach ($messages as $message) { ?>
-            <div><?= $message['text']; ?></div>
+            <div><?= htmlspecialchars($message['message']); ?></div>
+            <div><?= $message['login']; ?></div>
             <div><?= $message['time']; ?></div>
-            <div><?= $message['author']; ?></div>
         <?php } ?>
     </div>
 <?php } ?>
-<form action="index.php">
-    <input type="text" name="message">
+<form action="index.php" method="post">
+    <textarea name="message" id="message" cols="30" rows="10"></textarea>
+    <input type="hidden" name="token" value="<?= $token; ?>">
 
-    <p><input type="submit"></p>
+    <p><input type="submit" name="command" value="save"></p>
 </form>
 </body>
 </html>

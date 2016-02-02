@@ -1,57 +1,30 @@
 <?php
 
+error_reporting(E_ALL);
+session_start();
+
+require 'config.php';
+require 'blog.php';
+
 define('TEMPLATE_DIR', __DIR__);
 
-//$mysql = connection([
-//                       'host' => 'localhost',
-//                       'port' => '',
-//                       'user' => 'some',
-//                       'password' => '',
-//                    ]);
+$mysql = connection(mysql_config());
 
+$user = [
+   'id' => 0,
+   'login' => 'admin'
+];
+
+if (!empty($_POST['command']) && $_POST['command'] === 'save' && valid_request($_POST)) {
+    $statement = $mysql->prepare('INSERT INTO `messages` SET `message`=:message, `user_id`=:user_id, `time`=:time');
+    $statement->execute([':message' => $_POST['message'], ':user_id' => $user['id'], ':time' => date('Y-m-d H:i:s')]);
+}
+
+$messages = $mysql->query('SELECT m.`message`, m.`time`, u.`login` FROM `messages` m LEFT JOIN `users` u ON `m`.`user_id`=`u`.`id`')->fetchAll();
+
+$token = uniqid();
 echo template('index.html', [
-   'messages' => [
-      ['text' => 'some', 'author' => 'admin', 'time' => time()],
-      ['text' => 'some1', 'author' => 'admin', 'time' => time()],
-      ['text' => 'some2', 'author' => 'admin', 'time' => time()],
-      ['text' => 'some3', 'author' => 'admin', 'time' => time()],
-      ['text' => 'some4', 'author' => 'admin', 'time' => time()],
-      ['text' => 'some5', 'author' => 'admin', 'time' => time()],
-      ['text' => 'some6', 'author' => 'admin', 'time' => time()],
-   ]
+   'token' => $token,
+   'messages' => $messages,
 ]);
-
-//=======================================================================
-/**
- * @param array $config
- * @return PDO
- */
-function connection(array $config)
-{
-    $connection = new \PDO("mysql:host={$config['host']}" . (empty($config['port']) ? '' : ";port:{$config['port']}"), $config['user'], $config['password'], [
-       \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-       \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC
-    ]);
-    empty($config['dbname']) ?: $connection->query("USE `{$config['dbname']}`");
-    empty($config['encoding']) ?: $connection->query("SET NAMES '{$config['encoding']}'");
-    return $connection;
-}
-
-/**
- * @param $name
- * @param array $vars
- * @return string
- * @throws exception
- */
-function template($name, array $vars = [])
-{
-    if (!is_file(TEMPLATE_DIR . "/{$name}")) {
-        throw new exception("Could not load template file {$name}");
-    }
-    ob_start();
-    extract($vars);
-    require(TEMPLATE_DIR . "/{$name}");
-    $contents = ob_get_contents();
-    ob_end_clean();
-    return $contents;
-}
+$_SESSION['token'] = $token;
