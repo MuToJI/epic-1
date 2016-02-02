@@ -111,3 +111,13 @@ function routes($uri, $routes)
     }
     return false;
 }
+
+/**
+ * @return string
+ */
+function token()
+{
+    $token = uniqid();
+    $_SESSION['token'] = $token;
+    return $token;
+}

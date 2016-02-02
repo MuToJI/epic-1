@@ -24,18 +24,14 @@ if (!empty($_POST['command']) && valid_token($_POST['token'])) {
 }
 
 if (empty($user)) {
-    $token = uniqid();
     echo template('authorization.html', [
-       'token' => $token,
+       'token' => token(),
        'login' => empty($_POST['login']) ? '' : $_POST['login'],
     ]);
-    $_SESSION['token'] = $token;
     exit();
 }
 
-$token = uniqid();
 echo template('index.html', [
-   'token' => $token,
+   'token' => token(),
    'messages' => load_messages($mysql),
 ]);
-$_SESSION['token'] = $token;
