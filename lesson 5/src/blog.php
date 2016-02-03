@@ -32,12 +32,12 @@ function connection(array $config)
  */
 function template($name, array $vars = [])
 {
-    if (!is_file(TEMPLATE_DIR . "/{$name}")) {
+    if (!is_file($name)) {
         throw new \Exception("Could not load template file {$name}");
     }
     ob_start();
     extract($vars);
-    require(TEMPLATE_DIR . "/{$name}");
+    require($name);
     $contents = ob_get_contents();
     ob_end_clean();
     return $contents;

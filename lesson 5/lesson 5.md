@@ -1,24 +1,39 @@
-#Практическое использование sql в php
+# Практическое использование sql в php
 
-##Задачи
+## Задачи
 
 * подключение бд к проекту
 * выборка данных и сортировка по дате
 * добавление новых данных в базу
 * проблемы безопасности
 
-##Подключение
-<pre>
-    $config = [
-      'host' => 'localhost',
-      'port' => '',
-      'user' => 'some',
-      'password' => '',
-    ];
-    $mysql = new \PDO("mysql:host={$config['host']}" . (empty($config['port']) ? '' : ";port:{$config['port']}"), $config['user'], $config['password'], [
-      \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-      \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC
-    ]);
-    empty($config['dbname']) ?: $mysql->query("USE `{$config['dbname']}`");
-    empty($config['encoding']) ?: $mysql->query("SET NAMES '{$config['encoding']}'");
-</pre>
+# Ход занятия
+
+## Вспоминаем прошлое занятие
+
+* Что такое БД
+* Что такое СУБД
+* Что такое SQL
+* Примеры реляционных и нереляционных БД
+* Нормализация данных
+* Операции с БД (create, drop)
+* Операции с таблицами (create, drop, truncate, alter)
+* Операции с данными (select, insert, delete, update)
+
+## Реализация подключения к БД в php
+
+* mysql (только упоминание)
+* mysqli (подключение, запросы, обработка ошибок)
+* PDO (подключение, запросы, обработка ошибок)
+
+## Теория
+
+* Виды запросов (GET, POST, PUT, DELETE)
+* Куки и сессии (ограничения, использование)
+* Безопасность (проверка ввода, проверка вывода, sql-injection, xss)
+
+## Практическая реализация работы с БД
+
+* Подключение к БД
+* Вывод данных
+* Сортировка данных

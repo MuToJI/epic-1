@@ -6,7 +6,7 @@ session_start();
 require '../config.php';
 require '../blog.php';
 
-define('TEMPLATE_DIR', __DIR__ . '/templates');
+define('TEMPLATE_DIR', __DIR__ . '/../templates');
 
 $mysql = connection(mysql_config());
 
@@ -24,14 +24,14 @@ if (!empty($_POST['command']) && valid_token($_POST['token'])) {
 }
 
 if (empty($user)) {
-    echo template('authorization.html', [
+    echo template(TEMPLATE_DIR . '/authorization.html', [
        'token' => token(),
        'login' => empty($_POST['login']) ? '' : $_POST['login'],
     ]);
     exit();
 }
 
-echo template('index.html', [
+echo template(TEMPLATE_DIR . '/index.html', [
    'token' => token(),
    'messages' => load_messages($mysql),
 ]);
