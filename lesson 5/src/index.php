@@ -43,11 +43,11 @@ $messages = $connection->query('SELECT m.`message`,m.`time`,u.`login` FROM `mess
     </style>
 </head>
 <body>
-<h1>Epic blog</h1>
+<a href="http://epic-blog/lesson%205/src/index.php"><h1>Epic blog</h1></a>
 <?php if (!empty($messages)): ?>
     <?php foreach ($messages as $message): ?>
         <div class="message">
-            <div><?= htmlspecialchars($message['message']); ?></div>
+            <div><?= $message['message']; ?></div>
             <span class="left"><?= $message['login']; ?></span>
             <span class="right"><?= $message['time']; ?></span>
         </div>

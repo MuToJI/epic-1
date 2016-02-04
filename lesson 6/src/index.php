@@ -8,12 +8,17 @@ $connection = new \PDO("mysql:host=localhost;dbname=blog", 'root', 'vagrant', [
    \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
 ]);
 
-if (!empty($_GET['message'])) {
+if (!empty($_GET['message']) && !empty($_GET['action']) && $_GET['action'] == 'save') {
     $query = $connection->prepare("INSERT INTO `messages` SET `message`=:message, `time`=NOW(), `user_id`=0");
     $query->execute([':message' => $_GET['message']]);
 }
 
-$messages = $connection->query('SELECT m.`message`,m.`time`,u.`login` FROM `messages` m LEFT JOIN `users` u ON m.`user_id`=u.`id` ORDER BY m.`time` DESC')->fetchAll();
+if (!empty($_GET['message_id']) && !empty($_GET['action']) && $_GET['action'] == 'show') {
+    $message_id = (int)$_GET['message_id'];
+    $messages = $connection->query("SELECT m.`id`,m.`message`,m.`time`,u.`login` FROM `messages` m LEFT JOIN `users` u ON m.`user_id`=u.`id` WHERE m.`id`={$message_id} ORDER BY m.`time` DESC")->fetchAll();
+} else {
+    $messages = $connection->query('SELECT m.`id`,m.`message`,m.`time`,u.`login` FROM `messages` m LEFT JOIN `users` u ON m.`user_id`=u.`id` ORDER BY m.`time` DESC')->fetchAll();
+}
 
 ?>
 
@@ -44,10 +49,12 @@ $messages = $connection->query('SELECT m.`message`,m.`time`,u.`login` FROM `mess
     </style>
 </head>
 <body>
-<h1>Epic blog</h1>
+<a href="http://epic-blog/lesson%206/src/index.php"><h1>Epic blog</h1></a>
 <?php if (!empty($messages)): ?>
     <?php foreach ($messages as $message): ?>
         <div class="message">
+            <a href="http://epic-blog/lesson%206/src/index.php?action=show&message_id=<?= $message['id'] ?>"><h2>message № <?= $message['id'] ?></h2></a>
+
             <div><?= htmlspecialchars($message['message']); ?></div>
             <span class="left"><?= $message['login']; ?></span>
             <span class="right"><?= $message['time']; ?></span>
