@@ -1,5 +1,6 @@
 <?php
 
+ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 $connection = new \PDO("mysql:host=localhost;dbname=blog", 'root', 'vagrant', [
@@ -28,11 +29,12 @@ if (!empty($_GET['action'])) {
 
         case 'update':
             if (isset($_GET['message_id']) && !empty($_GET['message'])) {
-                $query = $connection->prepare("UPDATE TABLE `messages` SET `message`=:message, `time`=NOW(), `user_id`=0 WHERE `id`=:message_id");
+                $query = $connection->prepare("UPDATE `messages` SET `message`=:message, `time`=NOW(), `user_id`=0 WHERE `id`=:message_id");
                 $query->execute([
                                    ':message_id' => $_GET['message_id'],
                                    ':message' => $_GET['message']
                                 ]);
+                header('Location:http://epic-blog/lesson%206/src/index.php');
             }
             break;
     }
