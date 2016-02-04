@@ -8,17 +8,40 @@ $connection = new \PDO("mysql:host=localhost;dbname=blog", 'root', 'vagrant', [
    \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
 ]);
 
-if (!empty($_GET['message']) && !empty($_GET['action']) && $_GET['action'] == 'save') {
-    $query = $connection->prepare("INSERT INTO `messages` SET `message`=:message, `time`=NOW(), `user_id`=0");
-    $query->execute([':message' => $_GET['message']]);
+$message_id = null;
+
+if (!empty($_GET['action'])) {
+    switch ($_GET['action']) {
+
+        case 'show':
+            if (isset($_GET['message_id'])) {
+                $message_id = (int)$_GET['message_id'];
+            }
+            break;
+
+        case 'save':
+            if (!empty($_GET['message'])) {
+                $query = $connection->prepare("INSERT INTO `messages` SET `message`=:message, `time`=NOW(), `user_id`=0");
+                $query->execute([':message' => $_GET['message']]);
+            }
+            break;
+
+        case 'update':
+            if (isset($_GET['message_id']) && !empty($_GET['message'])) {
+                $query = $connection->prepare("UPDATE TABLE `messages` SET `message`=:message, `time`=NOW(), `user_id`=0 WHERE `id`=:message_id");
+                $query->execute([
+                                   ':message_id' => $_GET['message_id'],
+                                   ':message' => $_GET['message']
+                                ]);
+            }
+            break;
+    }
 }
 
-if (!empty($_GET['message_id']) && !empty($_GET['action']) && $_GET['action'] == 'show') {
-    $message_id = (int)$_GET['message_id'];
-    $messages = $connection->query("SELECT m.`id`,m.`message`,m.`time`,u.`login` FROM `messages` m LEFT JOIN `users` u ON m.`user_id`=u.`id` WHERE m.`id`={$message_id} ORDER BY m.`time` DESC")->fetchAll();
-} else {
-    $messages = $connection->query('SELECT m.`id`,m.`message`,m.`time`,u.`login` FROM `messages` m LEFT JOIN `users` u ON m.`user_id`=u.`id` ORDER BY m.`time` DESC')->fetchAll();
-}
+$messages =
+   $message_id === null
+      ? $connection->query('SELECT m.`id`,m.`message`,m.`time`,u.`login` FROM `messages` m LEFT JOIN `users` u ON m.`user_id`=u.`id` ORDER BY m.`time` DESC')->fetchAll()
+      : $connection->query("SELECT m.`id`,m.`message`,m.`time`,u.`login` FROM `messages` m LEFT JOIN `users` u ON m.`user_id`=u.`id` WHERE m.`id`={$message_id} ORDER BY m.`time` DESC")->fetchAll();
 
 ?>
 
