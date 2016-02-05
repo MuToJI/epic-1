@@ -9,6 +9,8 @@ $connection = new \PDO("mysql:host=localhost;dbname=blog", 'root', 'vagrant', [
    \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
 ]);
 
+$user = require 'authorization.php';
+
 $message_id = null;
 
 if (!empty($_GET['action'])) {
