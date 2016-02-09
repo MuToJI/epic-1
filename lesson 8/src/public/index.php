@@ -31,6 +31,7 @@ routes($_SERVER['REQUEST_URI'], [
            ]);
        }
    },
+
    'save' => function ($params) use ($connection, $user) {
        if (empty($user)) {
            header('Location:' . sprintf('%s?action=login', SITE_URL));
@@ -47,6 +48,7 @@ routes($_SERVER['REQUEST_URI'], [
 
        header('Location:' . sprintf('%s?action=home&message_id=%d', SITE_URL, $message_id));
    },
+
    'home' => function ($params) use ($connection, $user, $style) {
        if (empty($user)) {
            header('Location:' . sprintf('%s?action=login', SITE_URL));
