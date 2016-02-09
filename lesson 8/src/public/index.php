@@ -21,10 +21,11 @@ routes($_SERVER['REQUEST_URI'], [
 
        if (valid_token($_POST['token'])) {
            $user = user($connection, $login, $password);
+           if (!empty($user)) {
+               header('Location:' . sprintf('%s?action=home', SITE_URL));
+           }
        }
-       if (!empty($user)) {
-           return;
-       }
+
        echo template('../templates/authorization.php', [
           'token' => token(),
           'login' => $login,
