@@ -74,3 +74,111 @@ function load_messages(\PDO $connection, $message_id = null)
           ? $connection->query('SELECT m.`id`,m.`message`,m.`time`,u.`login` FROM `messages` m LEFT JOIN `users` u ON m.`user_id`=u.`id` ORDER BY m.`time` DESC')->fetchAll()
           : $connection->query("SELECT m.`id`,m.`message`,m.`time`,u.`login` FROM `messages` m LEFT JOIN `users` u ON m.`user_id`=u.`id` WHERE m.`id`={$message_id} ORDER BY m.`time` DESC")->fetchAll();
 }
+
+/**
+ * @param $token
+ * @return bool
+ */
+function valid_token($token)
+{
+    return !empty($_SESSION['token']) && $token == $_SESSION['token'];
+}
+
+/**
+ * @param $user_style
+ * @return null|string
+ */
+function style($user_style)
+{
+    switch ((int)$user_style) {
+        case 1:
+            return 'black';
+            break;
+        case 2:
+            return 'yellow';
+            break;
+    }
+    return 'main';
+}
+
+/**
+ * @param $name
+ * @param array $vars
+ * @return string
+ * @throws exception
+ */
+function template($name, array $vars = [])
+{
+    if (!is_file($name)) {
+        throw new exception("Could not load template file {$name}");
+    }
+    ob_start();
+    extract($vars);
+    require($name);
+    $contents = ob_get_contents();
+    ob_end_clean();
+    return $contents;
+}
+
+/**
+ * @param PDO $connection
+ * @param null $login
+ * @param null $password
+ * @return array|bool
+ */
+function user(\PDO $connection = null, $login = null, $password = null)
+{
+    if (!empty($_SESSION['user'])) {
+        return $_SESSION['user'];
+    }
+    if (empty($login)) {
+        return null;
+    }
+    $query = $connection->prepare('SELECT * FROM `users` WHERE `login`=:login AND `password`=:password');
+    $query->execute([
+                       ':login' => $login,
+                       ':password' => md5($password),
+                    ]);
+    $user = $query->fetch();
+    if (!empty($user)) {
+        $_SESSION['user'] = $user;
+    }
+    return $user;
+}
+
+/**
+ * @return string
+ */
+function token()
+{
+    $token = uniqid();
+    $_SESSION['token'] = $token;
+    return $token;
+}
+
+/**
+ * @param $uri
+ * @param $routes
+ * @return bool
+ */
+function routes($uri, $routes)
+{
+    $request = parse_url($uri);
+    $params = [];
+    if (!empty($request['query'])) {
+        parse_str($request['query'], $params);
+    }
+
+    foreach ($routes as $route => $callback) {
+        if (!empty($params['action']) && $route === $params['action'] && is_callable($callback)) {
+            unset($params['action']);
+            return $callback($params);
+        }
+    }
+
+    if(!empty($routes['home']) && is_callable($routes['home'])){
+        return $routes['home']($params);
+    }
+
+    return false;
+}
