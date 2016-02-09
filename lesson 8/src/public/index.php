@@ -19,7 +19,7 @@ routes($_SERVER['REQUEST_URI'], [
        $login = empty($_POST['login']) ? null : $_POST['login'];
        $password = empty($_POST['password']) ? null : $_POST['password'];
 
-       if (valid_token($_POST['token'])) {
+       if (!empty($_POST['token']) && valid_token($_POST['token'])) {
            $user = user($connection, $login, $password);
            if (!empty($user)) {
                header('Location:' . sprintf('%s?action=home', SITE_URL));
