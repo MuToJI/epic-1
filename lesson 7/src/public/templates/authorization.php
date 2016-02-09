@@ -1,8 +1,8 @@
 <?php
+/**
+ * global @var \PDO $connection
+ */
 
-if (!empty($_SESSION['user'])) {
-    return $_SESSION['user'];
-}
 
 if (empty($connection) || empty($input['login']) || empty($input['password'])) {
     return [];
@@ -16,5 +16,14 @@ $query->execute([
 $user = $query->fetch();
 if (!empty($user)) {
     $_SESSION['user'] = $user;
+    return $user;
 }
-return $user;
+
+?>
+
+<form action="authorization.php" method="post">
+    <input type="text" name="login" title="login">
+    <input type="password" name="password" title="password">
+    <input type="hidden" name="token" value="<?= $token ?>">
+    <input type="submit" value="login" title="login">
+</form>
