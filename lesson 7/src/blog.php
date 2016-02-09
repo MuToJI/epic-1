@@ -119,3 +119,39 @@ function template($name, array $vars = [])
     ob_end_clean();
     return $contents;
 }
+
+/**
+ * @param PDO $connection
+ * @param null $login
+ * @param null $password
+ * @return array|bool
+ */
+function user(\PDO $connection = null, $login = null, $password = null)
+{
+    if (!empty($_SESSION['user'])) {
+        return $_SESSION['user'];
+    }
+    if (empty($login)) {
+        return null;
+    }
+    $query = $connection->prepare('SELECT * FROM `users` WHERE `login`=:login AND `password`=:password');
+    $query->execute([
+                       ':login' => $login,
+                       ':password' => md5($password),
+                    ]);
+    $user = $query->fetch();
+    if (!empty($user)) {
+        $_SESSION['user'] = $user;
+    }
+    return $user;
+}
+
+/**
+ * @return string
+ */
+function token()
+{
+    $token = uniqid();
+    $_SESSION['token'] = $token;
+    return $token;
+}

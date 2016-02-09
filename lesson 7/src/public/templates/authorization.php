@@ -1,29 +1,16 @@
-<?php
-/**
- * global @var \PDO $connection
- */
-
-
-if (empty($connection) || empty($input['login']) || empty($input['password'])) {
-    return [];
-}
-
-$query = $connection->prepare("SELECT * FROM `users` WHERE `login`=:login AND `password`=:password");
-$query->execute([
-                   ':login' => $input['login'],
-                   ':password' => md5($input['password']),
-                ]);
-$user = $query->fetch();
-if (!empty($user)) {
-    $_SESSION['user'] = $user;
-    return $user;
-}
-
-?>
-
-<form action="authorization.php" method="post">
-    <input type="text" name="login" title="login">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>epic blog</title>
+    <link rel="stylesheet" href="assets/<?= $style ?>.css">
+</head>
+<body>
+<form action="<?= $site_url ?>" method="post">
+    <input type="text" name="login" value="<?= $login ?>" title="login">
     <input type="password" name="password" title="password">
+    <input type="submit" name="action" value="login">
     <input type="hidden" name="token" value="<?= $token ?>">
-    <input type="submit" value="login" title="login">
 </form>
+</body>
+</html>
