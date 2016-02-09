@@ -12,6 +12,22 @@ $style = style($_COOKIE['style']);
 $user = user();
 
 routes($_SERVER['REQUEST_URI'], [
+   'profile' => function ($params) use ($connection, $user, $style) {
+       if (empty($user)) {
+           header('Location:' . sprintf('%s?action=login', SITE_URL));
+       }
+
+       if (isset($_POST['style'])) {
+           setcookie('style', $_POST['style'], 0, '/');
+           $style = style($_POST['style']);
+       }
+
+       echo template('../templates/profile.php', [
+          'site_url' => SITE_URL,
+          'style' => $style,
+       ]);
+   },
+
    'login' => function ($params) use ($connection, $user, $style) {
        if (!empty($user)) {
            header('Location:' . sprintf('%s?action=home', SITE_URL));
@@ -29,7 +45,8 @@ routes($_SERVER['REQUEST_URI'], [
        echo template('../templates/authorization.php', [
           'token' => token(),
           'login' => $login,
-          'site_url' => SITE_URL
+          'site_url' => SITE_URL,
+          'style' => $style,
        ]);
    },
 

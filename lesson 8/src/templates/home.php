@@ -7,6 +7,7 @@
 </head>
 <body>
 <a href="<?= $site_url ?>"><h1>Epic blog</h1></a>
+<a href="<?= $site_url ?>?action=profile">profile</a>
 <?php if (!empty($messages)): ?>
     <?php foreach ($messages as $message): ?>
         <div class="message">
