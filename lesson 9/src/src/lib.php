@@ -177,7 +177,8 @@ function routes($uri, $routes)
     $action = empty($params['action']) ? 'home' : $params['action'];
 
     if (isset($routes[$action])) {
-        return $routes[$action]->handle($action, empty($_SERVER['REQUEST_METHOD']) ? 'get' : $_SERVER['REQUEST_METHOD'], $params);
+        $controller = new $routes[$action]();
+        return $controller->handle($action, empty($_SERVER['REQUEST_METHOD']) ? 'get' : $_SERVER['REQUEST_METHOD'], $params);
     }
 
     return false;

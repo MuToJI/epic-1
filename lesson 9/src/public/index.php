@@ -13,7 +13,7 @@ require '../vendor/autoload.php';
 Lib\connection(['host' => 'localhost', 'dbname' => 'blog', 'user' => 'root', 'password' => 'vagrant', 'encoding' => 'utf8']);
 
 Lib\routes($_SERVER['REQUEST_URI'], [
-   'home' => new Controllers\Home(),
-   'profile' => new Controllers\Profile(),
-   'login' => new Controllers\Login(),
+   'home' => 'Epic\Controllers\Home',
+   'profile' => 'Epic\Controllers\Profile',
+   'login' => 'Epic\Controllers\Login',
 ]);
