@@ -1,0 +1,19 @@
+{
+  "name": "Epic/blog",
+  "description": "epic blog",
+  "license": "free",
+  "authors": [
+    {
+      "name": "A. Nazarov",
+      "email": "a.nazarov@advmaker.net"
+    }
+  ],
+  "autoload": {
+    "files": [
+      "blog.php"
+    ],
+    "psr-4": {
+      "Epic\\": "epic"
+    }
+  }
+}
