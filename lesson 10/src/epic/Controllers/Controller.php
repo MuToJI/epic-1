@@ -2,14 +2,16 @@
 
 abstract class Controller
 {
-    public function __construct()
+    protected $app;
+
+    public function __construct($app)
     {
+        $this->app = $app;
     }
 
     public function handle($action, $method, $params)
     {
         $handler = $this->handler($action, $method);
-        var_dump($handler);
         return $this->{$handler}($params);
     }
 
