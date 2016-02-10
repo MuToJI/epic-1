@@ -9,7 +9,6 @@ abstract class Controller
     public function handle($action, $method, $params)
     {
         $handler = $this->handler($action, $method);
-        var_dump($handler);
         return $this->{$handler}($params);
     }
 
