@@ -2,11 +2,8 @@
 
 abstract class Controller
 {
-    protected $app;
-
-    public function __construct($app)
+    public function __construct()
     {
-        $this->app = $app;
     }
 
     public function handle($action, $method, $params)

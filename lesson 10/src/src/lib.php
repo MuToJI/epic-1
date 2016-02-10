@@ -2,15 +2,19 @@
 
 /**
  * @param array $config
- * @return PDO
+ * @return \PDO
  */
-function connection(array $config)
+function connection(array $config = [])
 {
-    return new \PDO("mysql:host={$config['host']};dbname={$config['dbname']}", $config['user'], $config['password'], [
-       \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-       \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-       \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES {$config['encoding']}"
-    ]);
+    static $connection;
+    if (empty($connection)) {
+        $connection = new \PDO("mysql:host={$config['host']};dbname={$config['dbname']}", $config['user'], $config['password'], [
+           \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+           \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+           \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES {$config['encoding']}"
+        ]);
+    }
+    return $connection;
 }
 
 /**
@@ -155,4 +159,35 @@ function token()
     $token = uniqid();
     $_SESSION['token'] = $token;
     return $token;
+}
+
+/**
+ * @param $uri
+ * @param $routes
+ * @return bool
+ */
+function routes($uri, $routes)
+{
+    $request = parse_url($uri);
+    $params = [];
+    if (!empty($request['query'])) {
+        parse_str($request['query'], $params);
+    }
+
+    $action = empty($params['action']) ? 'home' : $params['action'];
+
+    if (isset($routes[$action])) {
+        $controller = new $routes[$action]();
+        return $controller->handle($action, empty($_SERVER['REQUEST_METHOD']) ? 'get' : $_SERVER['REQUEST_METHOD'], $params);
+    }
+
+    return false;
+}
+
+/**
+ * @param $url
+ */
+function redirect($url)
+{
+    header("Location: {$url}");
 }

@@ -8,7 +8,6 @@ class Router
      * @var array Controller
      */
     private $routes;
-    private static $NAMESPACE = '\Epic\Controllers';
 
     public function __construct($routes = [])
     {
@@ -19,7 +18,6 @@ class Router
         if (!empty($this->routes[$route])) {
             return false;
         }
-        $controller = self::$NAMESPACE . "\\{$controller}";
         $this->routes[$route]['controller'] = new $controller();
         $this->routes[$route]['before'] = $before;
         $this->routes[$route]['after'] = $after;
@@ -33,13 +31,21 @@ class Router
         if (!empty($request['query'])) {
             parse_str($request['query'], $params);
         }
-        $route = empty($params['action']) ? 'home' : $params['action'];
-        foreach ($this->routes[$route]['before'] as $callback) {
-            !is_callable($callback) ?: $callback($params);
+
+        $action = empty($params['action']) ? 'home' : $params['action'];
+
+        if (empty($this->routes[$action])) {
+            throw new \Exception("No handlers for {$action}");
         }
-        echo $this->routes[$route]['controller']->handle($route, $_SERVER['REQUEST_METHOD'], $params);
-        foreach ($this->routes[$route]['after'] as $callback) {
-            !is_callable($callback) ?: $callback($params);
+
+        $controller = $this->routes[$action]['controller'];
+        foreach ($this->routes[$action]['before'] as $before) {
+            $before($params);
         }
+        /**
+         * @var Controllers\Controller $controller
+         */
+        $controller = new $controller();
+        return $controller->handle($action, empty($_SERVER['REQUEST_METHOD']) ? 'get' : $_SERVER['REQUEST_METHOD'], $params);
     }
 }

@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Epic\\' => array($baseDir . '/epic'),
+    'Epic\\' => array($baseDir . '/src'),
 );

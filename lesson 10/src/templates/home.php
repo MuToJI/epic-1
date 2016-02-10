@@ -11,7 +11,7 @@
 <?php if (!empty($messages)): ?>
     <?php foreach ($messages as $message): ?>
         <div class="message">
-            <a href="<?= $site_url ?>?action=home&message_id=<?= $message['id'] ?>"><h2>message № <?= $message['id'] ?></h2></a>
+            <a href="<?= $site_url ?>?message_id=<?= $message['id'] ?>"><h2>message № <?= $message['id'] ?></h2></a>
 
             <div><?= htmlspecialchars($message['message']); ?></div>
             <span class="left"><?= $message['login']; ?></span>
@@ -20,7 +20,7 @@
         <br/>
     <?php endforeach ?>
 <?php endif ?>
-<form action="<?= $site_url ?>?action=save" method="post">
+<form action="<?= $site_url ?>" method="post">
     <textarea name="message" id="message" rows="10"><?= empty($message_id) ? '' : $messages[0]['message'] ?></textarea>
     <input type="hidden" name="message_id" value="<?= $message_id ?>">
     <input type="submit" name="action" value="save">

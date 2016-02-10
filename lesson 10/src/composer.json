@@ -10,10 +10,10 @@
   ],
   "autoload": {
     "files": [
-      "epic/lib.php"
+      "src/lib.php"
     ],
     "psr-4": {
-      "Epic\\": "epic"
+      "Epic\\": "src"
     }
   }
 }

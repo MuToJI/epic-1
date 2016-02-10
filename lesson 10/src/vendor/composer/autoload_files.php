@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    '17d58923db8800d889c28b347f6fecd3' => $baseDir . '/epic/lib.php',
+    'f7a464d355daac7d9b9710a16f503418' => $baseDir . '/src/lib.php',
 );
