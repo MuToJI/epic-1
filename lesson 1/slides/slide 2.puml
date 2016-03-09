@@ -1,0 +1,14 @@
+@startuml
+title HTTP request
+actor Browser
+participant DNS
+participant Server
+
+autonumber
+Browser -> DNS: запрос на получение ip адреса
+DNS -> Browser: ip адрес сервера
+Browser -> Server: запрос страницы
+Server -> PHP: интерпретация страницы
+PHP -> Server: готовый результат отработки интерпретатора
+Server -> Browser: страница
+@enduml

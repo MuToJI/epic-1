@@ -1,0 +1,23 @@
+body {
+    background-color: black;
+    color: gray;
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.message {
+    margin-bottom: 20px;
+}
+
+textarea {
+    width: 100%;
+}

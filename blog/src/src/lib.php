@@ -106,24 +106,7 @@ function style($user_style)
     return 'main';
 }
 
-/**
- * @param string $name
- * @param array $vars
- * @return string
- * @throws \Exception
- */
-function template($name, array $vars = [])
-{
-    if (!is_file($name)) {
-        throw new \Exception("Could not load template file {$name}");
-    }
-    ob_start();
-    extract($vars);
-    require($name);
-    $contents = ob_get_contents();
-    ob_end_clean();
-    return $contents;
-}
+
 
 /**
  * @param \PDO $connection
