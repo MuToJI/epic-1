@@ -33,15 +33,6 @@ while (true) {
 }
 //=======================================================================
 /**
- * @param string $value
- * @return bool
- */
-function valid_op($value)
-{
-    return in_array($value, ['+', '-', '/', '*']);
-}
-
-/**
  * @param string $prompt
  * @param callable $validator
  * @return bool|string
