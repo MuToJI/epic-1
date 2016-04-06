@@ -40,6 +40,7 @@ while (true) {
 function input($prompt, $validator)
 {
     $value = '';
+    is_callable($validator);
     while (!$validator($value)) {
         $value = readline($prompt);
         if ($value === EXIT_COMMAND) {

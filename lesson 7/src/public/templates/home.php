@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="assets/<?= $style ?>.css">
 </head>
 <body>
-<a href="<?= $site_url ?>>"><h1>Epic blog</h1></a>
+<a href="<?= $site_url ?>"><h1>Epic blog</h1></a>
 <?php if (!empty($messages)): ?>
     <?php foreach ($messages as $message): ?>
         <div class="message">
