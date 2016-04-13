@@ -191,3 +191,11 @@ function redirect($url)
 {
     header("Location: {$url}");
 }
+
+/**
+ * @return mixed
+ */
+function is_logged()
+{
+    !empty(user()) ?: redirect(SITE_URL . '?action=login');
+}

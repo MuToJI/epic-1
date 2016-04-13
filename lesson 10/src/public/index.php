@@ -11,15 +11,7 @@ require '../vendor/autoload.php';
 Lib\connection(['host' => 'localhost', 'dbname' => 'blog', 'user' => 'root', 'password' => 'vagrant', 'encoding' => 'utf8']);
 
 $router = new Router();
-$router->add('home', '\Epic\Controllers\Home', [
-   function () {
-       !empty(Lib\user()) ?: Lib\redirect(SITE_URL . '?action=login');
-   }
-]);
-$router->add('profile', '\Epic\Controllers\Profile', [
-   function () {
-       !empty(Lib\user()) ?: Lib\redirect(SITE_URL . '?action=login');
-   }
-]);
+$router->add('home', '\Epic\Controllers\Home', ['\Epic\Lib\is_logged']);
+$router->add('profile', '\Epic\Controllers\Profile', ['\Epic\Lib\is_logged']);
 $router->add('login', '\Epic\Controllers\Login');
 $router->handle();
