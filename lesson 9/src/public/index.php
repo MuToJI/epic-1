@@ -6,7 +6,7 @@ session_start();
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-define('SITE_URL', 'http://epic-blog/lesson%209/src/public/index.php');
+define('SITE_URL', Lib\url());
 
 require '../vendor/autoload.php';
 
