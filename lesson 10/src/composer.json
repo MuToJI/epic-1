@@ -15,8 +15,5 @@
     "psr-4": {
       "Epic\\": "src"
     }
-  },
-  "require": {
-    "twig/twig": "~1.0"
   }
 }
