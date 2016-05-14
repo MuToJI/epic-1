@@ -15,6 +15,7 @@ while (true) {
         return $value == '+' || $value == '-' || $value == '*' || $value == '/';
     });
     $result = 0;
+
     switch ($operation) {
         case '+':
             $result = $a + $b;
@@ -40,7 +41,9 @@ while (true) {
 function input($prompt, $validator)
 {
     $value = '';
-    is_callable($validator);
+    if (!is_callable($validator)) {
+        return false;
+    };
     while (!$validator($value)) {
         $value = readline($prompt);
         if ($value === EXIT_COMMAND) {

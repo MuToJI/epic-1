@@ -10,6 +10,7 @@
 
 ## Коммит в локальный репозитарий
 * git commit -m <"message">
+* git commit -a -m <"message">
 
 ## Проверка статуса
 * git status - текущий статус проекта
@@ -29,6 +30,7 @@
 * git branch <branch-name> - создание ветки
 * git checkout <branch-name> - переключение на ветку
 * git checkout -b <branch-name> - создание ветки и переключение на нее
+* git push -u origin <branch-name>
 
 ## Слияние
-* 1git merge <branch-name> - слияние текущей ветки с branch-name
+* git merge <branch-name> - слияние текущей ветки с branch-name

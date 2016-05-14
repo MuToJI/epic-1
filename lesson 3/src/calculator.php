@@ -3,18 +3,16 @@
 const EXIT_COMMAND = 'exit';
 
 $operations = [
-    '+' => function ($a, $b) {
-        return $a + $b;
-    },
-    '-' => function ($a, $b) {
-        return $a - $b;
-    },
-    '*' => function ($a, $b) {
-        return $a * $b;
-    },
-    '/' => function ($a, $b) {
-        return $b == 0 ? 'Operation not permitted, b==0' : $a / $b;
-    },
+   '+' => function ($a, $b) {
+       return $a + $b;
+   },
+   '-' => function ($a, $b) {
+       return $a - $b;
+   },
+   '*' => function ($a, $b) {
+       return $a * $b;
+   },
+   '/' => 'divide',
 ];
 
 while (true) {
@@ -29,8 +27,8 @@ while (true) {
     $operation = input('Operation: ', function ($value) use ($operations) {
         return !empty($operations[$value]);
     });
-    $func = $operations[$operation];
-    echo $func($a, $b) . PHP_EOL;
+    $some = $operations[$operation];
+    echo $some($a, $b) . PHP_EOL;
 }
 //=======================================================================
 /**
@@ -41,7 +39,6 @@ while (true) {
 function input($prompt, $validator)
 {
     $value = '';
-    is_callable($validator);
     while (!$validator($value)) {
         $value = readline($prompt);
         if ($value === EXIT_COMMAND) {
