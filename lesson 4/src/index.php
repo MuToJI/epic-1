@@ -2,6 +2,7 @@
 
 if (!empty($_GET['title']) && !empty($_GET['message'])) {
     file_put_contents(__DIR__ . '/../messages/' . $_GET['title'], $_GET['message']);
+    header('Location:http://epic-blog/lesson%204/src/index.php');
 }
 
 $files = glob(__DIR__ . '/../messages/*');
