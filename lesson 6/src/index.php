@@ -11,16 +11,6 @@ $connection = new PDO("mysql:host=localhost;dbname=blog", 'root', 'vagrant', [
 
 $message_id = (isset($_GET['message_id'])) ? (int)$_GET['message_id'] : null;
 
-if (!empty($_GET['message'])) {
-    $params = [
-       ':message' => $_GET['message'],
-    ];
-
-    $query = $connection->prepare($sql);
-    $query->execute($params);
-    header('Location:http://epic-blog/lesson%206/src/index.php');
-}
-
 if (!empty($_POST['action']) && $_POST['action'] === 'save' && !empty($_POST['message'])) {
     $params[':message'] = $_POST['message'];
     if (!empty($message_id)) {
