@@ -3,45 +3,34 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-$connection = new \PDO("mysql:host=localhost;dbname=blog", 'root', 'vagrant', [
-   \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-   \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-   \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
+$connection = new PDO("mysql:host=localhost;dbname=blog", 'root', 'vagrant', [
+   PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+   PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+   PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
 ]);
 
-$message_id = null;
+$message_id = (isset($_GET['message_id'])) ? (int)$_GET['message_id'] : null;
 
-if (!empty($_GET['action'])) {
-    switch ($_GET['action']) {
+if (!empty($_GET['message'])) {
+    $params = [
+       ':message' => $_GET['message'],
+    ];
 
-        case 'show':
-            if (isset($_GET['message_id'])) {
-                $message_id = (int)$_GET['message_id'];
-            }
-            break;
-
-        case 'save':
-            if (!empty($_GET['message'])) {
-                $params = [
-                   ':message' => $_GET['message'],
-                ];
-                if (isset($_GET['message_id'])) {
-                    $params[':message_id'] = $_GET['message_id'];
-                    $sql = 'UPDATE `messages` SET `message`=:message, `time`=NOW(), `user_id`=0 WHERE `id`=:message_id';
-                } else {
-                    $sql = 'INSERT INTO `messages` SET `message`=:message, `time`=NOW(), `user_id`=0';
-                }
-                $query = $connection->prepare($sql);
-                $query->execute($params);
-                header('Location:http://epic-blog/lesson%206/src/index.php');
-            }
-            break;
-    }
+    $query = $connection->prepare($sql);
+    $query->execute($params);
+    header('Location:http://epic-blog/lesson%206/src/index.php');
 }
 
 if (!empty($_POST['action']) && $_POST['action'] === 'save' && !empty($_POST['message'])) {
-    $query = $connection->prepare("INSERT INTO `messages` SET `message`=:message, `time`=NOW(), `user_id`=0");
-    $query->execute([':message' => $_POST['message']]);
+    $params[':message'] = $_POST['message'];
+    if (!empty($message_id)) {
+        $params[':message_id'] = $message_id;
+        $sql = 'UPDATE `messages` SET `message`=:message, `time`=NOW(), `user_id`=0 WHERE `id`=:message_id';
+    } else {
+        $sql = 'INSERT INTO `messages` SET `message`=:message, `time`=NOW(), `user_id`=0';
+    }
+    $query = $connection->prepare($sql);
+    $query->execute($params);
     header('Location:http://epic-blog/lesson%206/src/index.php');
 }
 
@@ -87,7 +76,7 @@ $messages =
 <?php if (!empty($messages)): ?>
     <?php foreach ($messages as $message): ?>
         <div class="message">
-            <a href="http://epic-blog/lesson%206/src/index.php?action=show&message_id=<?= $message['id'] ?>"><h2>message № <?= $message['id'] ?></h2></a>
+            <a href="http://epic-blog/lesson%206/src/index.php?message_id=<?= $message['id'] ?>"><h2>message № <?= $message['id'] ?></h2></a>
 
             <div><?= htmlspecialchars($message['message']); ?></div>
             <span class="left"><?= $message['login']; ?></span>
@@ -96,8 +85,8 @@ $messages =
         <br/>
     <?php endforeach ?>
 <?php endif ?>
-<form action="http://epic-blog/lesson%206/src/index.php" method="post">
-    <textarea name="message" id="message" rows="10"></textarea>
+<form method="post">
+    <textarea name="message" id="message" rows="10"><?= empty($message_id) ? '' : $messages[0]['message']; ?></textarea>
     <input type="submit" name="action" value="save">
 </form>
 </body>
