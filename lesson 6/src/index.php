@@ -3,7 +3,7 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-$connection = new PDO("mysql:host=localhost;dbname=blog", 'root', 'vagrant', [
+$connection = new PDO('mysql:host=localhost;dbname=blog', 'root', 'vagrant', [
    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
    PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
@@ -11,16 +11,29 @@ $connection = new PDO("mysql:host=localhost;dbname=blog", 'root', 'vagrant', [
 
 $message_id = (isset($_GET['message_id'])) ? (int)$_GET['message_id'] : null;
 
-if (!empty($_POST['action']) && $_POST['action'] === 'save' && !empty($_POST['message'])) {
-    $params[':message'] = $_POST['message'];
-    if (!empty($message_id)) {
-        $params[':message_id'] = $message_id;
-        $sql = 'UPDATE `messages` SET `message`=:message, `time`=NOW(), `user_id`=0 WHERE `id`=:message_id';
-    } else {
-        $sql = 'INSERT INTO `messages` SET `message`=:message, `time`=NOW(), `user_id`=0';
+if (!empty($_REQUEST['action'])) {
+    switch ($_REQUEST['action']) {
+        case 'save':
+            if (empty($_POST['message'])) {
+                break;
+            }
+            $params[':message'] = $_POST['message'];
+            if (!empty($message_id)) {
+                $params[':message_id'] = $message_id;
+                $sql = 'UPDATE `messages` SET `message`=:message, `time`=NOW(), `user_id`=0 WHERE `id`=:message_id';
+            } else {
+                $sql = 'INSERT INTO `messages` SET `message`=:message, `time`=NOW(), `user_id`=0';
+            }
+            $query = $connection->prepare($sql);
+            $query->execute($params);
+            break;
+        case 'delete':
+            if (empty($message_id)) {
+                break;
+            }
+            $connection->query("DELETE FROM `messages` WHERE `id`={$message_id}");
+            break;
     }
-    $query = $connection->prepare($sql);
-    $query->execute($params);
     header('Location:http://epic-blog/lesson%206/src/index.php');
 }
 
@@ -67,7 +80,7 @@ $messages =
     <?php foreach ($messages as $message): ?>
         <div class="message">
             <a href="http://epic-blog/lesson%206/src/index.php?message_id=<?= $message['id'] ?>"><h2>message № <?= $message['id'] ?></h2></a>
-
+            <a href="http://epic-blog/lesson%206/src/index.php?action=delete&message_id=<?= $message['id'] ?>"><h3>kill</h3></a>
             <div><?= htmlspecialchars($message['message']); ?></div>
             <span class="left"><?= $message['login']; ?></span>
             <span class="right"><?= $message['time']; ?></span>
