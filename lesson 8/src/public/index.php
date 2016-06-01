@@ -11,6 +11,12 @@ $connection = connection(['host' => 'localhost', 'dbname' => 'blog', 'user' => '
 $style = style(empty($_COOKIE['style']) ? 0 : $_COOKIE['style']);
 $user = user();
 
+// http://domain.com/index.php
+// http://domain.com/index.php?action=home
+// http://domain.com/index.php?action=login
+// http://domain.com/index.php?action=profile
+// http://domain.com/index.php?action=save
+
 $action = empty($_GET['action']) ? 'home' : $_GET['action'];
 switch ($action) {
     case 'login':
@@ -81,6 +87,6 @@ switch ($action) {
         ]);
 }
 
-empty($response) ?
+echo empty($response) ?
     template('404.php')
     : $response;
