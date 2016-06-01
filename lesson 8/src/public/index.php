@@ -26,12 +26,11 @@ switch ($action) {
                 header('Location:' . sprintf('%s?action=home', SITE_URL));
             }
         }
-
-        echo template('../templates/authorization.php', [
-           'token' => token(),
-           'login' => $login,
-           'site_url' => SITE_URL,
-           'style' => $style,
+        $response = template('../templates/authorization.php', [
+            'token' => token(),
+            'login' => $login,
+            'site_url' => SITE_URL,
+            'style' => $style,
         ]);
         break;
     case 'profile':
@@ -44,9 +43,9 @@ switch ($action) {
             $style = style($_POST['style']);
         }
 
-        echo template('../templates/profile.php', [
-           'site_url' => SITE_URL,
-           'style' => $style,
+        $response = template('../templates/profile.php', [
+            'site_url' => SITE_URL,
+            'style' => $style,
         ]);
         break;
     case 'save':
@@ -59,8 +58,8 @@ switch ($action) {
 
         if (!empty($message) && valid_token($_POST['token'])) {
             isset($message_id)
-               ? update_message($connection, $message, $message_id)
-               : insert_message($connection, $message, $user['id']);
+                ? update_message($connection, $message, $message_id)
+                : insert_message($connection, $message, $user['id']);
         }
 
         header('Location:' . sprintf('%s?action=home&message_id=%d', SITE_URL, $message_id));
@@ -73,11 +72,15 @@ switch ($action) {
         $message_id = empty($_GET['message_id']) ? null : (int)$_GET['message_id'];
         $messages = load_messages($connection, $message_id);
 
-        echo template('../templates/home.php', [
-           'messages' => $messages,
-           'token' => token(),
-           'style' => $style,
-           'site_url' => SITE_URL,
-           'message_id' => $message_id,
+        $response = template('../templates/home.php', [
+            'messages' => $messages,
+            'token' => token(),
+            'style' => $style,
+            'site_url' => SITE_URL,
+            'message_id' => $message_id,
         ]);
 }
+
+empty($response) ?
+    template('404.php')
+    : $response;
